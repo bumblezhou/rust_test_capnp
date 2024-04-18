@@ -101,8 +101,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
             loop {
                 let (stream, _) = listener.accept().await?;
                 stream.set_nodelay(true)?;
-                let (reader, writer) =
-                    tokio_util::compat::TokioAsyncReadCompatExt::compat(stream).split();
+                let (reader, writer) = tokio_util::compat::TokioAsyncReadCompatExt::compat(stream).split();
                 let network = twoparty::VatNetwork::new(
                     reader,
                     writer,
@@ -110,8 +109,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     Default::default(),
                 );
 
-                let rpc_system =
-                    RpcSystem::new(Box::new(network), Some(hello_world_client.clone().client));
+                let rpc_system = RpcSystem::new(Box::new(network), Some(hello_world_client.clone().client));
 
                 tokio::task::spawn_local(rpc_system);
             }

@@ -31,8 +31,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Default::default(),
             ));
             let mut rpc_system = RpcSystem::new(rpc_network, None);
-            let hello_world: hello_world::Client =
-                rpc_system.bootstrap(rpc_twoparty_capnp::Side::Server);
+            let hello_world: hello_world::Client = rpc_system.bootstrap(rpc_twoparty_capnp::Side::Server);
 
             tokio::task::spawn_local(rpc_system);
 
