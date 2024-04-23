@@ -1,4 +1,4 @@
-use crate::HelloWorld_capnp::hello_world;
+use crate::hello_world_capnp::hello_world;
 use capnp_rpc::{rpc_twoparty_capnp, twoparty, RpcSystem};
 use std::net::ToSocketAddrs;
 
@@ -35,34 +35,49 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
             tokio::task::spawn_local(rpc_system);
 
-            let start = std::time::Instant::now();
+            let start_hello = std::time::Instant::now();
+            let mut hello_request = hello_world.say_hello_request();
+            let hello_req = hello_request.get();
+            hello_req.get_request()?.set_name("test_name");
+            let hello_reply = hello_request.send().promise.await?;
+            let hello_res = hello_reply.get()?.get_reply()?.get_message();
+            println!(
+                "say_hello received: {} turn around time is : {}", 
+                hello_res.unwrap().to_string().unwrap(),
+                start_hello.elapsed().as_millis()
+            );
+
+            let start_multuply = std::time::Instant::now();
             let mut request = hello_world.multuply_request();
             let mut req = request.get();
             req.set_a(3);
             req.set_b(4);
             let reply = request.send().promise.await?;
-            // let rep = reply.get()?.get_result();
+            let rep = reply.get()?.get_result();
+            println!(
+                "multuply received: 3 * 4 = {} turn around time is : {}", 
+                rep,
+                start_multuply.elapsed().as_millis()
+            );
 
+            let start_is_odd = std::time::Instant::now();
             let mut request_1 = hello_world.is_odd_request();
             let mut req_1 = request_1.get();
             req_1.set_a(reply.get()?.get_result());
-
             let reply_1 = request_1.send().promise.await?;
-            // println!("received: {}", reply.get()?.get_reply()?.get_message()?);
             println!(
-                "received={} turn around time is : {}",
+                "is_odd received: {} turn around time is : {}",
                 reply_1.get()?.get_is_odd(),
-                start.elapsed().as_millis()
+                start_is_odd.elapsed().as_millis()
             );
+
             let start_fact = std::time::Instant::now();
             let mut request_1 = hello_world.factorial_request();
             let mut req_1 = request_1.get();
             req_1.set_a(20);
-
             let reply_1 = request_1.send().promise.await?;
-            // println!("received: {}", reply.get()?.get_reply()?.get_message()?);
             println!(
-                "received={} turn around time is : {}",
+                "factorial(20) received: {} turn around time is : {}",
                 reply_1.get()?.get_fact(),
                 start_fact.elapsed().as_millis()
             );

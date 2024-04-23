@@ -1,16 +1,17 @@
 use capnp::capability::Promise;
 use capnp_rpc::{pry, rpc_twoparty_capnp, twoparty, RpcSystem};
 
-use crate::HelloWorld_capnp::hello_world;
+use crate::hello_world_capnp::hello_world;
 
 use futures::AsyncReadExt;
 use std::net::ToSocketAddrs;
 
 fn calc_factorial(num: u16) -> u64 {
-    if num == 0 {
-        return 0;
+    match num {
+        0 => 1,
+        1 => 1,
+        _ => calc_factorial(num - 1) * (num as u64),
     }
-    (num as u64) * calc_factorial(num - 1)
 }
 
 pub struct HelloWorldImpl {
@@ -76,6 +77,7 @@ impl hello_world::Server for HelloWorldImpl {
     ) -> capnp::capability::Promise<(), capnp::Error> {
         let number = pry!(params.get()).get_a();
         let res = calc_factorial(number);
+        println!("factorial result: {}", res);
         results.get().set_fact(res);
         capnp::capability::Promise::ok(())
     }

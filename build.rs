@@ -2,6 +2,6 @@
 fn main() {
     capnpc::CompilerCommand::new()
         .src_prefix("schema")
-        .file("./schema/HelloWorld.capnp")
+        .file("./schema/hello_world.capnp")
         .run().expect("schema compiler command");
 }
