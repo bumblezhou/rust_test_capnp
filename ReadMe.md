@@ -11,9 +11,20 @@ capnp --version
 ```bash
 export OUT_DIR=$(pwd)
 cargo build
-cargo run server localhost:2000 
-cargo run client localhost:2000 hello
 ```
+
+## How to run
+[1st terminal]
+```bash
+cargo run server localhost:2000
+```
+
+[2nd terminal]
+```bash
+cargo run client localhost:2000 'Mr Zhou'
+cargo run client localhost:2000 'Ms Huang'
+```
+
 
 ## Reference:
 1. https://medium.com/@learnwithshobhit/comparing-capn-proto-and-grpc-in-rust-a-performance-and-feature-analysis-61d2da815d18

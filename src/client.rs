@@ -38,7 +38,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let start_hello = std::time::Instant::now();
             let mut hello_request = hello_world.say_hello_request();
             let hello_req = hello_request.get();
-            hello_req.get_request()?.set_name("test_name");
+            hello_req.get_request()?.set_name(_msg);
             let hello_reply = hello_request.send().promise.await?;
             let hello_res = hello_reply.get()?.get_reply()?.get_message();
             println!(
